@@ -69,7 +69,7 @@
         ADMIN MODE — Full privileges active (students cannot access this)
       </div>
 
-      <!-- DIGITAL LIBRARY TAB (now fixed with documents) -->
+      <!-- DIGITAL LIBRARY TAB -->
       <div id="tab-0" class="tab-content p-10">
         <div class="flex justify-between items-center mb-8">
           <h1 class="text-4xl font-semibold">Digital Library</h1>
@@ -79,7 +79,7 @@
         <div id="document-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
       </div>
 
-      <!-- PROFILE TAB -->
+      <!-- PROFILE TAB (Last Active removed) -->
       <div id="tab-1" class="tab-content hidden p-10">
         <h1 class="text-4xl font-semibold mb-8">My Profile</h1>
         <div class="glass rounded-3xl p-10 max-w-2xl">
@@ -92,7 +92,6 @@
               <div><div class="text-gray-400 text-sm">Program</div><div id="profile-program" class="font-medium text-xl mt-1"></div></div>
               <div class="text-right"><div class="text-gray-400 text-sm">Status</div><div class="text-emerald-400 font-medium text-xl mt-1">Active</div></div>
             </div>
-            <div><div class="text-gray-400 text-sm">Last Active</div><div id="profile-last-active" class="font-medium text-xl mt-1"></div></div>
           </div>
         </div>
       </div>
@@ -145,7 +144,7 @@
   </div>
 
 <script>
-// =============== FULL DATABASE (documents restored) ===============
+// =============== FULL DATABASE ===============
 let db = {
   users: [
     { email: "jcesperanza@neu.edu.ph", role: "admin", program: "Faculty", isBlocked: false, lastActive: Date.now() - 1000000 },
@@ -213,16 +212,16 @@ function enterApp() {
   buildSidebar(isAdmin);
   switchTab(isAdmin ? 4 : 0);
 
-  // Profile
+  // Profile (Last Active removed)
   document.getElementById("profile-email").textContent = currentUser.email;
   document.getElementById("profile-role").textContent = currentUser.role.toUpperCase();
   document.getElementById("profile-program").textContent = currentUser.program || "Not set";
-  document.getElementById("profile-last-active").textContent = timeAgo(currentUser.lastActive);
 
+  // Very important: update timestamp on every login / app entry
   currentUser.lastActive = Date.now();
   saveDB();
 
-  renderDocuments();   // ← THIS WAS MISSING / EMPTY
+  renderDocuments();
   renderUserTable();
   initChart();
 }
@@ -249,7 +248,7 @@ function switchTab(n) {
   document.getElementById("tab-" + n).classList.remove("hidden");
 }
 
-// ==================== DOCUMENTS (NOW FULLY RESTORED) ====================
+// ==================== DOCUMENTS ====================
 function renderDocuments() {
   const grid = document.getElementById("document-grid");
   grid.innerHTML = "";
@@ -272,7 +271,7 @@ function downloadDoc(title) { alert(`✅ Downloaded: ${title}`); }
 function filterDocuments() { renderDocuments(); }
 function uploadDocument() { alert("✅ PDF uploaded successfully!"); }
 
-// ==================== USER TABLE ====================
+// ==================== USER TABLE (Last Active is accurate) ====================
 function renderUserTable() {
   const tbody = document.getElementById("user-table");
   tbody.innerHTML = "";
@@ -293,7 +292,7 @@ function renderUserTable() {
 
 function toggleBlock(i, blocked) {
   db.users[i].isBlocked = blocked;
-  db.users[i].lastActive = Date.now();
+  db.users[i].lastActive = Date.now();     // ← updates timestamp when admin changes block status
   saveDB();
   renderUserTable();
 }
