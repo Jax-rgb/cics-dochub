@@ -12,6 +12,8 @@
     .glass { background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); }
     .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .card-hover:hover { transform: translateY(-6px); }
+    .nav-item { transition: all 0.2s; }
+    .nav-item:hover { background-color: rgba(255,255,255,0.1); }
   </style>
 </head>
 <body class="bg-[#111111] text-white min-h-screen">
@@ -41,7 +43,7 @@
           </button>
 
           <div class="text-center text-xs text-gray-500 mt-4">
-            Only @neu.edu.ph emails are allowed • First-time users will be registered automatically
+            Only @neu.edu.ph emails are allowed • First-time students will choose their program
           </div>
         </div>
       </div>
@@ -51,18 +53,18 @@
   <!-- MAIN APP -->
   <div id="main-app" class="hidden min-h-screen flex">
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR (exact match to your screenshot) -->
     <div class="w-72 bg-black border-r border-white/10 flex flex-col">
       <div class="p-6 border-b border-white/10 flex items-center gap-3">
         <div class="w-9 h-9 bg-white rounded-2xl flex items-center justify-center text-3xl font-bold text-black">C</div>
         <div>
           <h2 class="text-2xl font-semibold">CICS DocHub</h2>
-          <p id="user-role-badge" class="text-xs tracking-widest px-3 py-1 inline-block rounded-full"></p>
+          <p id="role-badge" class="text-xs px-3 py-1 inline-block rounded-full font-medium"></p>
         </div>
       </div>
 
       <nav class="flex-1 p-4 space-y-1" id="sidebar-nav">
-        <!-- JS will fill this -->
+        <!-- JS filled -->
       </nav>
 
       <div class="p-6 border-t border-white/10">
@@ -72,15 +74,16 @@
       </div>
     </div>
 
-    <!-- CONTENT AREA -->
+    <!-- CONTENT -->
     <div class="flex-1 overflow-auto">
 
       <!-- ADMIN BANNER -->
-      <div id="admin-banner" class="hidden bg-red-600 py-3 text-center text-sm font-medium">
-        🔴 ADMIN MODE — Full privileges active (students cannot access this)
+      <div id="admin-banner" class="hidden bg-red-600 py-3 text-center text-sm font-medium flex items-center justify-center gap-2">
+        <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+        ADMIN MODE — Full privileges active (students cannot access this)
       </div>
 
-      <!-- LIBRARY TAB (both roles) -->
+      <!-- LIBRARY TAB -->
       <div id="tab-0" class="tab-content p-10">
         <div class="flex justify-between items-center mb-8">
           <div>
@@ -93,21 +96,36 @@
         <div id="document-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
       </div>
 
-      <!-- PROFILE TAB (both) -->
+      <!-- PROFILE TAB (NOW FILLED WITH REAL DATA) -->
       <div id="tab-1" class="tab-content hidden p-10">
         <h1 class="text-4xl font-semibold mb-8">My Profile</h1>
         <div class="glass rounded-3xl p-10 max-w-2xl">
-          <div class="grid grid-cols-2 gap-8 text-lg">
-            <div><span class="text-gray-400">Email</span><br><span id="profile-email" class="font-medium"></span></div>
-            <div><span class="text-gray-400">Role</span><br><span id="profile-role" class="font-medium"></span></div>
-            <div><span class="text-gray-400">Program</span><br><span id="profile-program" class="font-medium"></span></div>
-            <div><span class="text-gray-400">Status</span><br><span class="text-emerald-400 font-medium">Active</span></div>
+          <div class="grid grid-cols-2 gap-y-10 text-lg">
+            <div>
+              <div class="text-gray-400 text-sm">Email</div>
+              <div id="profile-email" class="font-medium text-xl mt-1"></div>
+            </div>
+            <div>
+              <div class="text-gray-400 text-sm">Role</div>
+              <div id="profile-role" class="font-medium text-xl mt-1"></div>
+            </div>
+            <div>
+              <div class="text-gray-400 text-sm">Program</div>
+              <div id="profile-program" class="font-medium text-xl mt-1"></div>
+            </div>
+            <div>
+              <div class="text-gray-400 text-sm">Status</div>
+              <div class="text-emerald-400 font-medium text-xl mt-1">Active</div>
+            </div>
+            <div>
+              <div class="text-gray-400 text-sm">Last Active</div>
+              <div id="profile-last-active" class="font-medium text-xl mt-1 text-gray-300"></div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- ADMIN ONLY TABS -->
-      <!-- UPLOAD -->
+      <!-- ADMIN UPLOAD -->
       <div id="tab-2" class="tab-content hidden p-10">
         <h1 class="text-4xl font-semibold mb-8">Upload New Document</h1>
         <div class="glass rounded-3xl p-12 max-w-2xl mx-auto text-center">
@@ -116,13 +134,12 @@
                class="border-4 border-dashed border-white/30 rounded-3xl h-80 flex flex-col items-center justify-center cursor-pointer hover:border-white">
             <span class="text-7xl mb-6">📤</span>
             <p class="text-xl font-medium">Drop PDF here or click to upload</p>
-            <p class="text-gray-400 mt-2">/cics_docs/ folder • Max 50MB</p>
           </div>
           <button onclick="uploadDocument()" class="mt-8 bg-white text-black px-12 py-5 rounded-2xl text-lg font-semibold">Upload to Firebase Storage</button>
         </div>
       </div>
 
-      <!-- USER MANAGEMENT -->
+      <!-- USER MANAGEMENT (with Block toggle + Last Active) -->
       <div id="tab-3" class="tab-content hidden p-10">
         <h1 class="text-4xl font-semibold mb-8">User Management</h1>
         <div class="glass rounded-3xl overflow-hidden">
@@ -132,6 +149,7 @@
                 <th class="py-6 px-8 text-left">Email</th>
                 <th class="py-6 px-8 text-left">Role</th>
                 <th class="py-6 px-8 text-left">Program</th>
+                <th class="py-6 px-8 text-left">Last Active</th>
                 <th class="py-6 px-8 text-left">Blocked</th>
               </tr>
             </thead>
@@ -144,7 +162,7 @@
       <div id="tab-4" class="tab-content hidden p-10">
         <h1 class="text-4xl font-semibold mb-8">Analytics &amp; Stats</h1>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          <div class="glass rounded-3xl p-8"><p class="text-gray-400">Total Downloads</p><p id="stat-downloads" class="text-6xl font-semibold mt-4">4,892</p></div>
+          <div class="glass rounded-3xl p-8"><p class="text-gray-400">Total Downloads</p><p class="text-6xl font-semibold mt-4">4,892</p></div>
           <div class="glass rounded-3xl p-8"><p class="text-gray-400">Registered Students</p><p id="stat-users" class="text-6xl font-semibold mt-4">1,234</p></div>
           <div class="glass rounded-3xl p-8"><p class="text-gray-400">Storage Used</p><p class="text-6xl font-semibold mt-4">2.8 GB</p></div>
           <div class="glass rounded-3xl p-8"><p class="text-gray-400">This Month</p><p class="text-6xl font-semibold mt-4 text-emerald-400">+412</p></div>
@@ -156,15 +174,14 @@
     </div>
   </div>
 
-  <!-- ONBOARDING MODAL (First-time registration) -->
+  <!-- ONBOARDING MODAL (Program selection on first student login) -->
   <div id="onboarding-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
     <div class="glass rounded-3xl p-10 max-w-md w-full mx-4">
       <h2 class="text-3xl font-semibold text-center">Welcome to CICS DocHub</h2>
-      <p class="text-center text-gray-400 mt-3">Registering your account...</p>
+      <p class="text-center text-gray-400 mt-3">Please choose your undergraduate program</p>
       
       <div class="mt-8">
-        <label class="text-sm text-gray-400">Undergraduate Program</label>
-        <select id="program-select" class="w-full mt-3 bg-transparent border border-white/30 rounded-2xl p-5 text-lg">
+        <select id="program-select" class="w-full bg-transparent border border-white/30 rounded-2xl p-5 text-lg">
           <option value="BSIT">BSIT</option>
           <option value="BSCS" selected>BSCS</option>
           <option value="BSIS">BSIS</option>
@@ -173,16 +190,28 @@
       </div>
       
       <button onclick="completeRegistration()" 
-              class="mt-8 w-full bg-white text-black font-semibold py-5 rounded-2xl text-lg">Complete Registration</button>
+              class="mt-8 w-full bg-white text-black font-semibold py-5 rounded-2xl text-lg">Continue</button>
     </div>
   </div>
 
 <script>
-// =============== FAKE DATABASE (persisted in localStorage) ===============
+// =============== FAKE DATABASE (persisted) ===============
 let db = {
   users: [
-    { email: "jcesperanza@neu.edu.ph", role: "admin", program: "Faculty", isBlocked: false },
-    { email: "jacqueseuan.carigma@neu.edu.ph", role: "student", program: "BSCS", isBlocked: false }
+    { 
+      email: "jcesperanza@neu.edu.ph", 
+      role: "admin", 
+      program: "Faculty", 
+      isBlocked: false,
+      lastActive: "Just now"
+    },
+    { 
+      email: "jacqueseuan.carigma@neu.edu.ph", 
+      role: "student", 
+      program: "BSCS", 
+      isBlocked: false,
+      lastActive: "2 hours ago"
+    }
   ],
   documents: [
     { id:1, title:"CICS Student Handbook 2025", category:"Manual", downloads:124 },
@@ -192,32 +221,22 @@ let db = {
   ]
 }
 
-// Load from localStorage
-if (localStorage.getItem("cicsDB")) {
-  db = JSON.parse(localStorage.getItem("cicsDB"))
-}
+if (localStorage.getItem("cicsDB")) db = JSON.parse(localStorage.getItem("cicsDB"))
 
 function saveDB() {
   localStorage.setItem("cicsDB", JSON.stringify(db))
 }
 
-// =============== LOGIN & ROLE LOGIC ===============
 let currentUser = null
 
 function handleLogin() {
   let email = document.getElementById("email-input").value.trim().toLowerCase()
-  
-  if (!email.endsWith("@neu.edu.ph")) {
-    alert("❌ Only institutional @neu.edu.ph emails are allowed!")
-    return
-  }
+  if (!email.endsWith("@neu.edu.ph")) return alert("❌ Only @neu.edu.ph emails allowed!")
 
-  // Find user in DB
   currentUser = db.users.find(u => u.email === email)
 
-  // First-time user → register as STUDENT only
   if (!currentUser) {
-    currentUser = { email: email, role: "student", program: "", isBlocked: false }
+    currentUser = { email, role: "student", program: "", isBlocked: false, lastActive: "Just now" }
     document.getElementById("onboarding-modal").classList.remove("hidden")
     return
   }
@@ -226,69 +245,66 @@ function handleLogin() {
 }
 
 function completeRegistration() {
-  const program = document.getElementById("program-select").value
-  currentUser.program = program
+  currentUser.program = document.getElementById("program-select").value
   db.users.push(currentUser)
   saveDB()
   document.getElementById("onboarding-modal").classList.add("hidden")
   enterApp()
 }
 
-// =============== ENTER APP ===============
 function enterApp() {
   document.getElementById("login-screen").classList.add("hidden")
   document.getElementById("main-app").classList.remove("hidden")
 
-  // STRICT ROLE CHECK
   const isAdmin = currentUser.role === "admin"
 
-  // Update badge
-  const badge = document.getElementById("user-role-badge")
+  // Role badge (exact screenshot style)
+  const badge = document.getElementById("role-badge")
   badge.textContent = isAdmin ? "ADMIN" : "STUDENT"
   badge.className = isAdmin 
-    ? "text-xs tracking-widest px-3 py-1 inline-block rounded-full bg-red-600" 
-    : "text-xs tracking-widest px-3 py-1 inline-block rounded-full bg-emerald-600"
+    ? "text-xs px-3 py-1 inline-block rounded-full font-medium bg-red-600" 
+    : "text-xs px-3 py-1 inline-block rounded-full font-medium bg-emerald-600"
 
-  // Show admin banner ONLY for admin
   document.getElementById("admin-banner").classList.toggle("hidden", !isAdmin)
 
-  // Build sidebar dynamically
   buildSidebar(isAdmin)
+  switchTab(isAdmin ? 4 : 0)
 
-  // Show different default tab
-  switchTab(isAdmin ? 4 : 0)   // Admin starts at Analytics, Student at Library
+  // Populate Profile with REAL data
+  document.getElementById("profile-email").textContent = currentUser.email
+  document.getElementById("profile-role").textContent = currentUser.role.toUpperCase()
+  document.getElementById("profile-program").textContent = currentUser.program || "Not set"
+  document.getElementById("profile-last-active").textContent = currentUser.lastActive || "Just now"
 
   renderDocuments()
   renderUserTable()
   initChart()
 }
 
-// =============== SIDEBAR (DIFFERENT FOR EACH ROLE) ===============
 function buildSidebar(isAdmin) {
   const nav = document.getElementById("sidebar-nav")
   nav.innerHTML = `
-    <a onclick="switchTab(0)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl hover:bg-white/10">📚 Digital Library</a>
-    <a onclick="switchTab(1)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl hover:bg-white/10">👤 My Profile</a>
+    <a onclick="switchTab(0)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl text-white"><span class="text-emerald-400">📚</span> Digital Library</a>
+    <a onclick="switchTab(1)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl text-white"><span class="text-purple-400">👤</span> My Profile</a>
   `
 
   if (isAdmin) {
     nav.innerHTML += `
-      <div class="h-px bg-white/10 my-6"></div>
+      <div class="h-px bg-white/10 my-6 mx-5"></div>
       <div class="px-5 text-xs text-red-400 font-medium mb-3">ADMIN ONLY</div>
-      <a onclick="switchTab(2)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl hover:bg-white/10">📤 Upload Document</a>
-      <a onclick="switchTab(3)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl hover:bg-white/10">👥 User Management</a>
-      <a onclick="switchTab(4)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl hover:bg-white/10">📊 Analytics & Stats</a>
+      <a onclick="switchTab(2)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl text-white"><span class="text-blue-400">📤</span> Upload Document</a>
+      <a onclick="switchTab(3)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl text-white"><span class="text-purple-400">👥</span> User Management</a>
+      <a onclick="switchTab(4)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl text-white"><span class="text-orange-400">📊</span> Analytics &amp; Stats</a>
     `
   }
 }
 
-// =============== TAB SWITCHING ===============
 function switchTab(n) {
   document.querySelectorAll(".tab-content").forEach(t => t.classList.add("hidden"))
   document.getElementById(`tab-${n}`).classList.remove("hidden")
 }
 
-// =============== DOCUMENTS ===============
+// ==================== DOCUMENTS ====================
 function renderDocuments() {
   const grid = document.getElementById("document-grid")
   grid.innerHTML = ""
@@ -300,66 +316,70 @@ function renderDocuments() {
       <h3 class="font-medium mt-2">${doc.title}</h3>
       <div class="mt-6 flex justify-between items-center">
         <span class="text-xs text-gray-400">${doc.downloads} downloads</span>
-        <button onclick="downloadDoc('${doc.title}')" class="bg-white text-black px-8 py-3 rounded-2xl text-sm">Download</button>
+        <button onclick="downloadDoc('${doc.title}')" class="bg-white text-black px-8 py-3 rounded-2xl text-sm font-medium">Download</button>
       </div>
     `
     grid.appendChild(card)
   })
 }
 
-function filterDocuments() {
-  const term = document.getElementById("search-input").value.toLowerCase()
-  // Simple filter (demo)
-  renderDocuments()
-}
+function downloadDoc(title) { alert(`✅ Downloaded: ${title}`) }
+function filterDocuments() { renderDocuments() }
+function uploadDocument() { alert("✅ PDF uploaded to /cics_docs/") }
 
-function downloadDoc(title) {
-  alert(`✅ Downloaded: ${title}\n\n(Real app would use Firebase Storage)`)
-}
-
-function uploadDocument() {
-  alert("✅ PDF uploaded successfully!\n\nSaved to Firebase Storage /cics_docs/")
-}
-
-// =============== USER TABLE (ADMIN ONLY) ===============
+// ==================== USER MANAGEMENT (Interactive Block + Last Active) ====================
 function renderUserTable() {
   const tbody = document.getElementById("user-table")
   tbody.innerHTML = ""
-  db.users.forEach(user => {
+  
+  db.users.forEach((user, index) => {
     const tr = document.createElement("tr")
+    tr.className = "hover:bg-white/5"
     tr.innerHTML = `
-      <td class="py-6 px-8">${user.email}</td>
+      <td class="py-6 px-8 font-medium">${user.email}</td>
       <td class="py-6 px-8">${user.role}</td>
       <td class="py-6 px-8">${user.program || "—"}</td>
-      <td class="py-6 px-8">${user.isBlocked ? "✅ Blocked" : "Active"}</td>
+      <td class="py-6 px-8 text-gray-400">${user.lastActive}</td>
+      <td class="py-6 px-8">
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" ${user.isBlocked ? "checked" : ""} 
+                 onchange="toggleBlock(${index}, this.checked)"
+                 class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:bg-red-600">
+          <span class="ml-3 text-sm">${user.isBlocked ? "Blocked" : "Active"}</span>
+        </label>
+      </td>
     `
     tbody.appendChild(tr)
   })
 }
 
-// =============== CHART ===============
+function toggleBlock(index, blocked) {
+  db.users[index].isBlocked = blocked
+  db.users[index].lastActive = blocked ? "Blocked" : "Just now"
+  saveDB()
+  renderUserTable()
+  
+  if (blocked && db.users[index].email === currentUser.email) {
+    alert("⚠️ You have blocked your own account!")
+  }
+}
+
+// ==================== CHART ====================
 let chartInstance = null
 function initChart() {
   const ctx = document.getElementById("trend-chart")
   if (chartInstance) chartInstance.destroy()
   chartInstance = new Chart(ctx, {
     type: 'line',
-    data: {
-      labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-      datasets: [{ label: 'Downloads', data: [42,68,95,81,120,78,145], borderColor: '#fff', tension: 0.4, borderWidth: 3 }]
-    },
-    options: { plugins: { legend: { display: false }}, scales: { y: { grid: { color: '#ffffff10' }}}}
+    data: { labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], datasets: [{ label: 'Downloads', data: [42,68,95,81,120,78,145], borderColor: '#fff', tension: 0.4 }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#ffffff10' }}}}
   })
 }
 
-// =============== LOGOUT ===============
 function logout() {
-  document.getElementById("main-app").classList.add("hidden")
-  document.getElementById("login-screen").classList.remove("hidden")
-  document.getElementById("email-input").value = ""
+  location.reload()
 }
 
-// Tailwind ready
 tailwind.config = {}
 </script>
 </body>
