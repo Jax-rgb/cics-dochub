@@ -16,184 +16,124 @@
 </head>
 <body class="bg-[#111111] text-white min-h-screen">
 
-  <!-- LOGIN SCREEN -->
-  <div id="login-screen" class="min-h-screen flex items-center justify-center p-6">
-    <div class="max-w-md w-full">
-      <div class="text-center mb-10">
-        <img src="neu-logo.png" class="w-28 h-28 mx-auto rounded-full shadow-2xl" alt="New Era University">
-        <h1 class="text-4xl font-semibold mt-4">CICS DocHub</h1>
-        <p class="text-gray-400 mt-1">Digital Repository for College Excellence</p>
-      </div>
+<!-- LOGIN -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center p-6">
+  <div class="max-w-md w-full">
+    <div class="text-center mb-10">
+      <img src="neu-logo.png" class="w-28 h-28 mx-auto rounded-full shadow-2xl">
+      <h1 class="text-4xl font-semibold mt-4">CICS DocHub</h1>
+    </div>
 
-      <div class="glass rounded-3xl p-8 border border-white/10">
-        <div class="space-y-6">
-          <div>
-            <label class="text-xs uppercase tracking-widest text-gray-400 block mb-2">UNIVERSITY EMAIL</label>
-            <input id="email-input" type="email" placeholder="name.surname@neu.edu.ph" 
-                   class="w-full bg-transparent border border-white/30 focus:border-white rounded-2xl px-5 py-4 text-lg outline-none">
-          </div>
-          <button onclick="handleLogin()" class="w-full bg-white hover:bg-gray-100 text-black font-semibold py-4 rounded-2xl text-lg">Sign in with NEU Account</button>
-        </div>
+    <div class="glass rounded-3xl p-8 border border-white/10">
+      <input id="email-input" type="email" placeholder="name@neu.edu.ph"
+        class="w-full bg-transparent border border-white/30 rounded-2xl px-5 py-4 mb-6">
+      <button onclick="handleLogin()" class="w-full bg-white text-black py-4 rounded-2xl">
+        Sign in
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main-app" class="hidden min-h-screen flex">
+
+<!-- SIDEBAR -->
+<div class="w-72 bg-black border-r border-white/10 flex flex-col">
+  <div class="p-6 border-b border-white/10">
+    <h2 class="text-2xl font-semibold">CICS DocHub</h2>
+    <p id="role-badge"></p>
+  </div>
+  <nav id="sidebar-nav" class="flex-1 p-4"></nav>
+</div>
+
+<!-- CONTENT -->
+<div class="flex-1 overflow-auto">
+
+<!-- LIBRARY -->
+<div id="tab-0" class="tab-content p-10">
+  <h1 class="text-4xl mb-8">Digital Library</h1>
+  <div id="document-grid" class="grid grid-cols-3 gap-6"></div>
+</div>
+
+<!-- PROFILE (UPDATED - NO LAST ACTIVE) -->
+<div id="tab-1" class="tab-content hidden p-10">
+  <h1 class="text-4xl mb-8">My Profile</h1>
+  <div class="glass rounded-3xl p-10 max-w-2xl">
+    <div class="flex justify-between mb-6">
+      <div>
+        <div>Email</div>
+        <div id="profile-email"></div>
+      </div>
+      <div>
+        <div>Role</div>
+        <div id="profile-role"></div>
+      </div>
+    </div>
+
+    <div class="flex justify-between">
+      <div>
+        <div>Program</div>
+        <div id="profile-program"></div>
+      </div>
+      <div>
+        <div>Status</div>
+        <div class="text-emerald-400">Active</div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- MAIN APP -->
-  <div id="main-app" class="hidden min-h-screen flex">
+<!-- USER MANAGEMENT -->
+<div id="tab-3" class="tab-content hidden p-10">
+  <h1 class="text-4xl mb-8">User Management</h1>
+  <table class="w-full">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Program</th>
+        <th>Last Active</th>
+      </tr>
+    </thead>
+    <tbody id="user-table"></tbody>
+  </table>
+</div>
 
-    <!-- SIDEBAR -->
-    <div class="w-72 bg-black border-r border-white/10 flex flex-col">
-      <div class="p-6 border-b border-white/10 flex items-center gap-3">
-        <img src="neu-logo.png" class="w-10 h-10 rounded-2xl" alt="NEU">
-        <div>
-          <h2 class="text-2xl font-semibold">CICS DocHub</h2>
-          <p id="role-badge" class="text-xs px-3 py-1 inline-block rounded-full font-medium"></p>
-        </div>
-      </div>
-
-      <nav class="flex-1 p-4 space-y-1" id="sidebar-nav"></nav>
-
-      <div class="p-6 border-t border-white/10">
-        <button onclick="logout()" class="w-full flex items-center gap-3 text-red-400 hover:text-red-300 py-3">
-          <span class="text-xl">⭍</span> Sign Out
-        </button>
-      </div>
-    </div>
-
-    <!-- CONTENT -->
-    <div class="flex-1 overflow-auto">
-
-      <!-- ADMIN BANNER -->
-      <div id="admin-banner" class="hidden bg-red-600 py-3 text-center text-sm font-medium flex items-center justify-center gap-2">
-        <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-        ADMIN MODE — Full privileges active (students cannot access this)
-      </div>
-
-      <!-- DIGITAL LIBRARY TAB (now fixed with documents) -->
-      <div id="tab-0" class="tab-content p-10">
-        <div class="flex justify-between items-center mb-8">
-          <h1 class="text-4xl font-semibold">Digital Library</h1>
-          <input id="search-input" onkeyup="filterDocuments()" placeholder="Search documents..." 
-                 class="w-96 bg-white/10 border border-white/30 rounded-3xl py-4 px-6 outline-none">
-        </div>
-        <div id="document-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
-      </div>
-
-      <!-- PROFILE TAB -->
-      <div id="tab-1" class="tab-content hidden p-10">
-        <h1 class="text-4xl font-semibold mb-8">My Profile</h1>
-        <div class="glass rounded-3xl p-10 max-w-2xl">
-          <div class="space-y-8">
-            <div class="flex justify-between border-b border-white/10 pb-8">
-              <div><div class="text-gray-400 text-sm">Email</div><div id="profile-email" class="font-medium text-xl mt-1"></div></div>
-              <div class="text-right"><div class="text-gray-400 text-sm">Role</div><div id="profile-role" class="font-medium text-xl mt-1"></div></div>
-            </div>
-            <div class="flex justify-between border-b border-white/10 pb-8">
-              <div><div class="text-gray-400 text-sm">Program</div><div id="profile-program" class="font-medium text-xl mt-1"></div></div>
-              <div class="text-right"><div class="text-gray-400 text-sm">Status</div><div class="text-emerald-400 font-medium text-xl mt-1">Active</div></div>
-            </div>
-            <div><div class="text-gray-400 text-sm">Last Active</div><div id="profile-last-active" class="font-medium text-xl mt-1"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ADMIN TABS -->
-      <div id="tab-2" class="tab-content hidden p-10">
-        <h1 class="text-4xl font-semibold mb-8">Upload New Document</h1>
-        <div class="glass rounded-3xl p-12 text-center">
-          <input type="file" id="pdf-upload" accept=".pdf" class="hidden">
-          <div onclick="document.getElementById('pdf-upload').click()" class="border-4 border-dashed border-white/30 rounded-3xl h-80 flex flex-col items-center justify-center cursor-pointer">
-            <span class="text-7xl mb-6">📤</span><p class="text-xl font-medium">Drop PDF here or click</p>
-          </div>
-          <button onclick="uploadDocument()" class="mt-8 bg-white text-black px-12 py-5 rounded-2xl text-lg font-semibold">Upload</button>
-        </div>
-      </div>
-
-      <div id="tab-3" class="tab-content hidden p-10">
-        <h1 class="text-4xl font-semibold mb-8">User Management</h1>
-        <div class="glass rounded-3xl overflow-hidden">
-          <table class="w-full"><thead class="bg-white/5"><tr><th class="py-6 px-8 text-left">Email</th><th class="py-6 px-8 text-left">Role</th><th class="py-6 px-8 text-left">Program</th><th class="py-6 px-8 text-left">Last Active</th><th class="py-6 px-8 text-left">Blocked</th></tr></thead><tbody id="user-table" class="divide-y divide-white/10"></tbody></table>
-        </div>
-      </div>
-
-      <div id="tab-4" class="tab-content hidden p-10">
-        <h1 class="text-4xl font-semibold mb-8">Analytics &amp; Stats</h1>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          <div class="glass rounded-3xl p-8"><p class="text-gray-400">Total Downloads</p><p class="text-6xl font-semibold mt-4">4,892</p></div>
-          <div class="glass rounded-3xl p-8"><p class="text-gray-400">Registered Students</p><p class="text-6xl font-semibold mt-4">1,234</p></div>
-          <div class="glass rounded-3xl p-8"><p class="text-gray-400">Storage Used</p><p class="text-6xl font-semibold mt-4">2.8 GB</p></div>
-          <div class="glass rounded-3xl p-8"><p class="text-gray-400">This Month</p><p class="text-6xl font-semibold mt-4 text-emerald-400">+412</p></div>
-        </div>
-        <div class="glass rounded-3xl p-10"><canvas id="trend-chart" height="140"></canvas></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ONBOARDING -->
-  <div id="onboarding-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-    <div class="glass rounded-3xl p-10 max-w-md w-full mx-4">
-      <h2 class="text-3xl font-semibold text-center">Welcome to CICS DocHub</h2>
-      <p class="text-center text-gray-400 mt-3">Please choose your undergraduate program</p>
-      <select id="program-select" class="w-full mt-8 bg-transparent border border-white/30 rounded-2xl p-5 text-lg">
-        <option value="BSIT">BSIT</option>
-        <option value="BSCS" selected>BSCS</option>
-        <option value="BSIS">BSIS</option>
-        <option value="BSIT-M">BSIT-M</option>
-      </select>
-      <button onclick="completeRegistration()" class="mt-8 w-full bg-white text-black font-semibold py-5 rounded-2xl text-lg">Continue</button>
-    </div>
-  </div>
+</div>
+</div>
 
 <script>
-// =============== FULL DATABASE (documents restored) ===============
 let db = {
-  users: [
-    { email: "jcesperanza@neu.edu.ph", role: "admin", program: "Faculty", isBlocked: false, lastActive: Date.now() - 1000000 },
-    { email: "jacqueseuan.carigma@neu.edu.ph", role: "student", program: "BSCS", isBlocked: false, lastActive: Date.now() - 7200000 }
-  ],
+  users: [],
   documents: [
-    { id:1, title:"CICS Student Handbook 2025", category:"Manual", downloads:124 },
-    { id:2, title:"BSCS Curriculum Flowchart", category:"Curriculum", downloads:89 },
-    { id:3, title:"Internship Requirements", category:"Guide", downloads:67 },
-    { id:4, title:"Clearance Form 2025", category:"Forms", downloads:312 },
-    { id:5, title:"Thesis Guidelines 2025", category:"Academic", downloads:45 },
-    { id:6, title:"Lab Manual - Programming", category:"Manual", downloads:203 }
+    { title:"Handbook", downloads:100 },
+    { title:"Curriculum", downloads:50 }
   ]
-}
-
-if (localStorage.getItem("cicsDB")) db = JSON.parse(localStorage.getItem("cicsDB"))
-
-function saveDB() { localStorage.setItem("cicsDB", JSON.stringify(db)) }
-
-function timeAgo(ts) {
-  const diff = Math.floor((Date.now() - ts) / 1000);
-  if (diff < 60) return "Just now";
-  if (diff < 3600) return Math.floor(diff/60) + " minutes ago";
-  if (diff < 86400) return Math.floor(diff/3600) + " hours ago";
-  return Math.floor(diff/86400) + " days ago";
-}
+};
 
 let currentUser = null;
 
-function handleLogin() {
-  let email = document.getElementById("email-input").value.trim().toLowerCase();
-  if (!email.endsWith("@neu.edu.ph")) return alert("❌ Only @neu.edu.ph emails allowed!");
-
-  currentUser = db.users.find(u => u.email === email);
-  if (!currentUser) {
-    currentUser = { email, role: "student", program: "", isBlocked: false, lastActive: Date.now() };
-    document.getElementById("onboarding-modal").classList.remove("hidden");
-    return;
-  }
-  enterApp();
+function saveDB() {
+  localStorage.setItem("db", JSON.stringify(db));
 }
 
-function completeRegistration() {
-  currentUser.program = document.getElementById("program-select").value;
-  currentUser.lastActive = Date.now();
-  db.users.push(currentUser);
-  saveDB();
-  document.getElementById("onboarding-modal").classList.add("hidden");
+function timeAgo(ts) {
+  const diff = Math.floor((Date.now() - ts) / 1000);
+  if (diff < 60) return "🟢 Online";
+  if (diff < 3600) return Math.floor(diff/60) + " min ago";
+  if (diff < 86400) return Math.floor(diff/3600) + " hrs ago";
+  return Math.floor(diff/86400) + " days ago";
+}
+
+function handleLogin() {
+  const email = document.getElementById("email-input").value;
+  currentUser = db.users.find(u => u.email === email);
+
+  if (!currentUser) {
+    currentUser = { email, role:"student", program:"BSCS", lastActive: Date.now() };
+    db.users.push(currentUser);
+  }
+
   enterApp();
 }
 
@@ -201,111 +141,46 @@ function enterApp() {
   document.getElementById("login-screen").classList.add("hidden");
   document.getElementById("main-app").classList.remove("hidden");
 
-  const isAdmin = currentUser.role === "admin";
-
-  // Badge
-  const badge = document.getElementById("role-badge");
-  badge.textContent = isAdmin ? "ADMIN" : "STUDENT";
-  badge.className = isAdmin ? "bg-red-600" : "bg-emerald-600";
-
-  document.getElementById("admin-banner").classList.toggle("hidden", !isAdmin);
-
-  buildSidebar(isAdmin);
-  switchTab(isAdmin ? 4 : 0);
-
-  // Profile
   document.getElementById("profile-email").textContent = currentUser.email;
-  document.getElementById("profile-role").textContent = currentUser.role.toUpperCase();
-  document.getElementById("profile-program").textContent = currentUser.program || "Not set";
-  document.getElementById("profile-last-active").textContent = timeAgo(currentUser.lastActive);
+  document.getElementById("profile-role").textContent = currentUser.role;
+  document.getElementById("profile-program").textContent = currentUser.program;
 
-  currentUser.lastActive = Date.now();
-  saveDB();
+  renderUsers();
 
-  renderDocuments();   // ← THIS WAS MISSING / EMPTY
-  renderUserTable();
-  initChart();
-}
+  // 🔥 refresh table
+  setInterval(() => renderUsers(), 5000);
 
-function buildSidebar(isAdmin) {
-  const nav = document.getElementById("sidebar-nav");
-  nav.innerHTML = `
-    <a onclick="switchTab(0)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl"><span class="text-emerald-400">📚</span> Digital Library</a>
-    <a onclick="switchTab(1)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl"><span class="text-purple-400">👤</span> My Profile</a>
-  `;
-  if (isAdmin) {
-    nav.innerHTML += `
-      <div class="h-px bg-white/10 my-6 mx-5"></div>
-      <div class="px-5 text-xs text-red-400 font-medium mb-3">ADMIN ONLY</div>
-      <a onclick="switchTab(2)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl"><span class="text-blue-400">📤</span> Upload Document</a>
-      <a onclick="switchTab(3)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl"><span class="text-purple-400">👥</span> User Management</a>
-      <a onclick="switchTab(4)" class="nav-item flex items-center gap-3 px-5 py-4 rounded-2xl"><span class="text-orange-400">📊</span> Analytics &amp; Stats</a>
-    `;
-  }
-}
+  // 🔥 auto update activity
+  setInterval(() => {
+    currentUser.lastActive = Date.now();
+    saveDB();
+  }, 10000);
 
-function switchTab(n) {
-  document.querySelectorAll(".tab-content").forEach(t => t.classList.add("hidden"));
-  document.getElementById("tab-" + n).classList.remove("hidden");
-}
-
-// ==================== DOCUMENTS (NOW FULLY RESTORED) ====================
-function renderDocuments() {
-  const grid = document.getElementById("document-grid");
-  grid.innerHTML = "";
-  db.documents.forEach(doc => {
-    const card = document.createElement("div");
-    card.className = "glass rounded-3xl p-6 card-hover";
-    card.innerHTML = `
-      <div class="text-xs uppercase text-gray-400">${doc.category}</div>
-      <h3 class="font-medium mt-2">${doc.title}</h3>
-      <div class="mt-6 flex justify-between items-center">
-        <span class="text-xs text-gray-400">${doc.downloads} downloads</span>
-        <button onclick="downloadDoc('${doc.title}')" class="bg-white text-black px-8 py-3 rounded-2xl text-sm font-medium">Download</button>
-      </div>
-    `;
-    grid.appendChild(card);
+  // 🔥 real activity tracking
+  ["click","mousemove","keydown","scroll"].forEach(e=>{
+    document.addEventListener(e, ()=>{
+      currentUser.lastActive = Date.now();
+      saveDB();
+    });
   });
 }
 
-function downloadDoc(title) { alert(`✅ Downloaded: ${title}`); }
-function filterDocuments() { renderDocuments(); }
-function uploadDocument() { alert("✅ PDF uploaded successfully!"); }
-
-// ==================== USER TABLE ====================
-function renderUserTable() {
+function renderUsers() {
   const tbody = document.getElementById("user-table");
   tbody.innerHTML = "";
-  db.users.forEach((user, i) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td class="py-6 px-8">${user.email}</td>
-      <td class="py-6 px-8">${user.role}</td>
-      <td class="py-6 px-8">${user.program || "—"}</td>
-      <td class="py-6 px-8">${timeAgo(user.lastActive)}</td>
-      <td class="py-6 px-8">
-        <input type="checkbox" ${user.isBlocked ? "checked" : ""} onchange="toggleBlock(${i}, this.checked)" class="w-5 h-5 accent-red-600">
-      </td>
+
+  db.users.forEach(u => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${u.email}</td>
+        <td>${u.role}</td>
+        <td>${u.program}</td>
+        <td>${timeAgo(u.lastActive)}</td>
+      </tr>
     `;
-    tbody.appendChild(tr);
   });
 }
-
-function toggleBlock(i, blocked) {
-  db.users[i].isBlocked = blocked;
-  db.users[i].lastActive = Date.now();
-  saveDB();
-  renderUserTable();
-}
-
-function initChart() {
-  const ctx = document.getElementById("trend-chart");
-  new Chart(ctx, { type: 'line', data: { labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], datasets: [{ label: 'Downloads', data: [42,68,95,81,120,78,145], borderColor: '#fff', tension: 0.4 }] }, options: { plugins: { legend: { display: false } } } });
-}
-
-function logout() { location.reload(); }
-
-tailwind.config = {}
 </script>
+
 </body>
 </html>
